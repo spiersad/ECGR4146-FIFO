@@ -1,0 +1,39 @@
+library ieee;  
+use ieee.std_logic_1164.all;  
+use ieee.std_logic_unsigned.all;
+
+entity FIFO4Bit is
+  port(DataIn : in std_logic_vector(3 downto 0);
+       Push, Pop : in std_logic;
+       DataOut : out std_logic_vector(3 downto 0));
+end FIFO4Bit;
+
+architecture behav of FIFO4Bit is
+  type buffertype is array(63 downto 0) of std_logic_vector(3 downto 0); 
+  signal tmpbuffer : buffertype := (others => "0000");
+  begin
+    process(Push, Pop)
+      variable i : integer := 0;
+      begin
+        if (i <= 0 and Pop = '1') then
+          tmpbuffer(0) <= "0000";
+        elsif (i >= 63 and Push = '1') then
+        elsif (Push = '1' and Pop = '1') then
+          for x in 0 to 62 loop
+            tmpbuffer(x) <= tmpbuffer(x+1);
+          end loop;
+          tmpbuffer(63) <= "0000";
+          tmpbuffer(i-1) <= DataIn;
+        elsif (Push = '1') then
+          tmpbuffer(i) <= DataIn;
+          i := i + 1;
+        elsif (Pop = '1') then
+          for x in 0 to 62 loop
+            tmpbuffer(x) <= tmpbuffer(x+1);
+          end loop;
+          tmpbuffer(63) <= "0000";
+          i := i - 1;
+        end if;
+        DataOut <= tmpbuffer(0);
+    end process;
+end behav;

@@ -1,0 +1,58 @@
+library ieee;  
+use ieee.std_logic_1164.all;  
+use ieee.std_logic_unsigned.all; 
+ 
+entity FIFO4BitTB is
+end FIFO4BitTB;
+
+architecture behav of FIFO4BitTB is
+  component FIFO4Bit
+    port(DataIn : in std_logic_vector(3 downto 0);
+       Push, Pop : in std_logic;
+       DataOut : out std_logic_vector(3 downto 0));
+  end component;
+  signal DataIn : std_logic_vector(3 downto 0);
+  signal Push, Pop : std_logic;
+  signal DataOut : std_logic_vector(3 downto 0);
+  begin
+    uut : FIFO4Bit port map(
+      DataIn => DataIn,
+      Push => Push,
+      Pop => Pop,
+      DataOut => DataOut);
+      
+      process
+        begin
+          DataIn <= "1011";
+          Push <= '1';
+          wait for 1 ns;
+          Push <= '0';
+          wait for 1 ns;
+          Push <= '1';
+          wait for 1 ns;
+          Push <= '0';
+          wait for 1 ns;
+          Push <= '1';
+          wait for 1 ns;
+          Push <= '0';
+          wait for 1 ns;
+          Pop <= '1';
+          wait for 1 ns;
+          Pop <= '0';
+          wait for 1 ns;
+          Pop <= '1';
+          wait for 1 ns;
+          Pop <= '0';
+          wait for 1 ns;
+          Pop <= '1';
+          wait for 1 ns;
+          Pop <= '0';
+          wait for 1 ns;
+          Pop <= '1';
+          wait for 1 ns;
+          Pop <= '0';
+          wait for 1 ns;
+          
+          wait;
+      end process;
+end behav;

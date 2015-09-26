@@ -1,0 +1,60 @@
+library ieee;  
+use ieee.std_logic_1164.all;  
+use IEEE.NUMERIC_STD.all; 
+ 
+entity FIFO_TB is
+end FIFO_TB;
+
+architecture behavior of FIFO_TB is
+  constant N: integer := 8;
+  constant M: integer := 64;
+  constant clk_period : time := 1 ns;
+  component FIFO 
+    port(CLK, PUSH, POP, INIT: in std_logic;
+        DIN: in std_logic_vector(M-1 downto 0);
+        DOUT: out std_logic_vector(M-1 downto 0);
+        FULL, EMPTY, NOPUSH, NOPOP: out std_logic);
+  end component;
+  signal CLK, PUSH, POP, INIT: std_logic := '0';
+  signal DIN: std_logic_vector(M-1 downto 0) := std_logic_vector(to_unsigned(5, M));
+  signal DOUT: std_logic_vector(M-1 downto 0);
+  signal FULL, EMPTY, NOPUSH, NOPOP: std_logic;
+  begin
+    uut: FIFO port map(CLK => CLK, PUSH => PUSH, POP => POP,
+                       INIT => INIT, DIN => DIN, DOUT => DOUT,
+                       FULL => FULL, EMPTY => EMPTY,
+                       NOPUSH => NOPUSH, NOPOP => NOPOP);
+    clk_process : process
+      begin
+        clk <= '0';
+        wait for clk_period/2;
+        clk <= '1';
+        wait for clk_period/2;
+    end process;
+    process
+      begin
+        init <= '1';
+        wait for 1 ns;
+        init <= '0';
+        wait for 1 ns;
+        din <= std_logic_vector(to_unsigned(5, M));
+        push <= '1';
+        wait for 1 ns;
+        push <= '0';
+        wait for 1 ns;
+        din <= std_logic_vector(to_unsigned(30, M));
+        push <= '1';
+        wait for 1 ns;
+        push <= '0';
+        wait for 1 ns;
+        din <= std_logic_vector(to_unsigned(255, M));
+        push <= '1';
+        wait for 1 ns;
+        push <= '0';
+        wait for 1 ns;
+        pop <= '1';
+        wait for 1 ns;
+        pop <= '0';
+        wait;
+    end process;
+end behavior;
